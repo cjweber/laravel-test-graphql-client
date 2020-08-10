@@ -1,0 +1,28 @@
+{
+  "name": "cjweber/laravel-test-graphql-client",
+  "description": "Client and TestCase extension for running integration tests on requests to your GraphQL API",
+  "type": "library",
+  "keywords": [
+    "graphql",
+    "client",
+    "laravel",
+    "testing"
+  ],
+  "require": {
+    "php": "^7.0",
+    "phpunit/phpunit": ">=8.0"
+  },
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Chris Weber",
+      "email": "christopher.j.weber@protonmail.com"
+    }
+  ],
+  "autoload": {
+      "psr-4": {
+          "GraphQLTestClient\\": "src/GraphQLTestClient/"
+      }
+  },
+  "minimum-stability": "dev"
+}
