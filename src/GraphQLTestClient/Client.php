@@ -12,7 +12,8 @@ abstract class Client
     /** @var array */
     protected $variables;
 
-    public function __construct(string $baseUrl) {
+    public function __construct(string $baseUrl)
+    {
         $this->baseUrl = $baseUrl;
         $this->variables = [];
     }
@@ -34,7 +35,6 @@ abstract class Client
             $query->getQueryHeader($this->variables),
             $queryBody
         );
-
         return [
             'query' => $queryString,
             'variables' => $this->getVariableContent($this->variables)
@@ -44,7 +44,6 @@ abstract class Client
     private function fieldToString(Field $field): string
     {
         $result = $field->getName();
-
         if (!empty($field->getChildren())) {
             $children = '';
             foreach ($field->getChildren() as $child) {
@@ -52,9 +51,7 @@ abstract class Client
             }
             $result .= sprintf(' { %s }', $children);
         }
-
         $result .=  PHP_EOL;
-
         return $result;
     }
 
@@ -70,7 +67,6 @@ abstract class Client
     private function getParamString(array $params): string
     {
         $result = '';
-
         foreach ($params as $key => $value) {
             if (is_string($key)) {
                 $result .= $key . ' : ';
@@ -88,14 +84,12 @@ abstract class Client
                 $result .= sprintf('%s ', json_encode($value));
             }
         }
-
         return $result;
     }
 
     private function getQueryString(Field $query): string
     {
         $fieldString = '';
-
         if ($query->getChildren()) {
             $fieldString .= '{';
             foreach ($query->getChildren() as $field) {
@@ -104,7 +98,6 @@ abstract class Client
             }
             $fieldString .= '}';
         }
-
         $paramString = '';
         $paramStringBody = '';
         if ($query instanceof Query) {
@@ -112,19 +105,16 @@ abstract class Client
             $paramString =  empty($paramStringBody) ? '' : '(' . $paramStringBody . ')';
         }
         $queryString = sprintf('%s%s %s', $query->getName(), $paramString, $fieldString);
-
-
         return $queryString;
-
     }
 
     public function executeQuery(array $data, array $multipart = null)
     {
-        if (is_array($multipart)) {
+        $isMultipart = is_array($multipart);
+        if ($isMultipart) {
             $data = array_merge(['operations' => json_encode($data)], $multipart);
         }
-
-        return $this->postQuery($data);
+        return $this->postQuery($data, $isMultipart);
     }
 
     public function mutate(Query $query, array $multipart = null): ResponseData
@@ -136,7 +126,6 @@ abstract class Client
     public function query(Query $query):ResponseData
     {
         $response = $this->executeQuery($this->getQueryData($query));
-
         return new ResponseData($response['data'][$query->getName()]);
     }
 
@@ -155,11 +144,9 @@ abstract class Client
     private function getVariableContent(array $variables)
     {
         $result = [];
-
         foreach ($variables as $variable) {
             $result[$variable->getName()] = $variable->getValue();
         }
-
         return $result;
     }
 
@@ -186,5 +173,5 @@ abstract class Client
         }
     }
 
-    abstract protected function postQuery(array $data);
+    abstract protected function postQuery(array $data, bool $isMultipart = false);
 }
