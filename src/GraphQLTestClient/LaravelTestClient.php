@@ -27,8 +27,11 @@ class LaravelTestClient extends Client
         $this->app = $app;
     }
 
-    protected function postQuery(array $data): array
+    protected function postQuery(array $data, bool $isMultipart = false): array
     {
+        if ($isMultipart) {
+            $this->withHeader('content-type', 'multipart/form-data');
+        }
         $this->response = $this->post($this->getBaseUrl(), $data);
         return json_decode($this->response->getContent(), true);
     }
