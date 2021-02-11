@@ -3,6 +3,8 @@
 namespace GraphQLTestClient;
 
 use PHPUnit\Framework\Assert;
+use function array_key_exists;
+use function json_encode;
 
 abstract class Client
 {
@@ -55,7 +57,7 @@ abstract class Client
         return $result;
     }
 
-    private function hasStringKeys(array $array):bool
+    private function hasStringKeys(array $array): bool
     {
         return count(array_filter(array_keys($array), 'is_string')) > 0;
     }
@@ -120,10 +122,13 @@ abstract class Client
     public function mutate(Query $query, array $multipart = null): ResponseData
     {
         $response = $this->executeQuery($this->getMutationData($query), $multipart);
+        if (array_key_exists('errors', $response)) {
+            return ResponseData::withErrors($response['data'][$query->getName()], $response['errors']);
+        }
         return new ResponseData($response['data'][$query->getName()]);
     }
 
-    public function query(Query $query):ResponseData
+    public function query(Query $query): ResponseData
     {
         $response = $this->executeQuery($this->getQueryData($query));
         return new ResponseData($response['data'][$query->getName()]);
