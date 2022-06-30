@@ -9,7 +9,7 @@
     "testing"
   ],
   "require": {
-    "php": "^7.0",
+    "php": ">=7.0",
     "phpunit/phpunit": ">=8.0"
   },
   "license": "BSD-3-Clause",
