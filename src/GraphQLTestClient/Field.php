@@ -32,7 +32,7 @@ class Field
 
     public function addChild(Field $field): Field
     {
-        $children []= $field;
+        $this->children []= $field;
         return $this;
     }
 
